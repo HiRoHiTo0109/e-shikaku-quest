@@ -2979,19 +2979,19 @@ const DB = [
     "q": 'Affineレイヤ（Y = XW + B）の逆伝播で、入力Xの勾配(dx)を求める式は？（doutは出力側の勾配）<br><span style="font-family:monospace; background:#333; padding:2px;">dx = np.dot([ ? ], W.T)</span>',
     "a": ['dout', 'dout.T', 'W', 'X'],
     "exp": '形状を確認しましょう。Y=XWの逆伝播では、dx = dot(dout, W.T) となります。'
-　},
-　{
+  },
+  {
     "sid": 11,
     "q": '逆伝播を実行し、勾配を計算するメソッドは？<br><span style="font-family:monospace; background:#333; padding:2px;">loss = criterion(output, target)<br>loss.[ ? ]()</span>',
     "a": ['backward', 'backprop', 'gradient', 'step'],
     "exp": '「loss.backward()」を呼ぶことで、計算グラフを遡って各パラメータの .grad 属性に勾配が格納されます。'
-　},
-　{
+  },
+  {
     "sid": 11,
     "q": '推論時など、勾配計算を無効化してメモリを節約するためのコンテキストマネージャは？<br><span style="font-family:monospace; background:#333; padding:2px;">with torch.[ ? ]():<br>    output = model(x)</span>',
     "a": ['no_grad', 'grad_off', 'eval', 'inference'],
     "exp": '「with torch.no_grad():」ブロック内では勾配計算が行われません。検証・テスト時に必須です。'
-　},
+  },
 
     // --- 12: 最適化手法 ---
   {
@@ -5501,7 +5501,7 @@ const DB = [
     "q": '学習済みモデルの重み（パラメータ）のみを保存する推奨コードは？<br><span style="font-family:monospace; background:#333; padding:2px;">torch.save(model.[ ? ](), "model.pth")</span>',
     "a": ['state_dict', 'parameters', 'weights', 'get_params'],
     "exp": '「model.state_dict()」は、パラメータ名とTensorを対応付けた辞書オブジェクトを返します。'
-　},
+  },
   {
     "sid": 18,
     "q": '保存した重みをモデルに読み込むコードは？<br><span style="font-family:monospace; background:#333; padding:2px;">model.[ ? ](torch.load("model.pth"))</span>',
@@ -6127,4 +6127,3 @@ draw();
 </body>
 
 </html>
-
