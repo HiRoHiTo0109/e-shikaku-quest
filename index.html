@@ -6117,7 +6117,6 @@ function draw() {
             if (tile === 5) { ctx.fillStyle='#afa'; ctx.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE); }
         }
     }
-    // 【変更点】プレイヤーの向きに応じた画像を描画
     const heroKey = `hero_${Player.dir}`;
     drawTile(heroKey, Player.x, Player.y, '#4db8ff');
     ctx.restore();
@@ -6128,4 +6127,3 @@ draw();
 </body>
 
 </html>
-
