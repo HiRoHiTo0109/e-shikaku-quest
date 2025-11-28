@@ -5785,7 +5785,7 @@ const LECTURES = {
         "【転移学習 (Transfer Learning)】\n有名なモデルが学習した知識（重み）を借りて、自分のタスクに合わせて微調整する効率的な術じゃ。",
         "【Conv2dの引数】\n`nn.Conv2d(in_channels, out_channels, kernel_size)` が基本じゃ。\n入力画像のチャンネル数がRGBなら `in_channels=3` になるな。",
         "【入力テンソルの形状】\nPyTorchの画像入力は `(Batch, Channel, Height, Width)` の順序（BCHW）じゃ。\nOpenCVなどは (H, W, C) のことが多いゆえ、`permute` などで入れ替える必要があるぞ。",
-        "【プーリング層】\n最大値プーリングは `nn.MaxPool2d(kernel_size)` じゃ。\n画像のサイズを半分にしたいなら `kernel_size=2`、`stride=2` とするのが定石じゃな。"
+        "【プーリング層】\n最大値プーリングは `nn.MaxPool2d(kernel_size)` じゃ。\n画像のサイズを半分にしたいなら `kernel_size=2`、`stride=2` とするのが定石じゃな。",
         "【畳み込み層の定義 (nn.Conv2d)】\n基本は `nn.Conv2d(in_channels, out_channels, kernel_size)` じゃ。\n`in_channels` は入力画像の深さ（RGBなら3）、`out_channels` はフィルタの数じゃ。\nこの順番を逆にすると、次の層で次元が合わずエラーになるぞ。ゆめゆめ間違えるな。",
         "【パディングとストライド (Padding & Stride)】\n画像サイズを変えずに畳み込みたいなら、3x3カーネルに対し `padding=1` を指定せよ。\n逆に画像を小さくしたいなら `stride=2` とすれば、サイズは半分になる。\nプーリングを使わずストライドで縮小するのも、最近の流行りじゃな。",
         "【プーリングの使い分け (Max vs Avg)】\n`nn.MaxPool2d` は領域内の最大値をとる。エッジなどの「強い特徴」を残したい画像認識ではこちらが主流じゃ。\n一方 `nn.AvgPool2d` は平均をとる。全体を滑らかにしたい時や、Global Average Pooling として最後の全結合層の代わりに使うことが多いのう。",
@@ -6127,3 +6127,4 @@ draw();
 </body>
 
 </html>
+
