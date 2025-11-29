@@ -92,7 +92,11 @@
         .hp-bar-fill { height: 100%; width: 100%; transition: width 0.2s; }
         .hp-green { background: #0f0; } .hp-red { background: #f00; }
         .enemy-display { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .enemy-img-large { width: 100px; height: 100px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 10px red); }
+        .enemy-img-large { 
+            width: min(120px, 25vw); height: min(120px, 25vw); 
+            object-fit: contain; image-rendering: pixelated; 
+            filter: drop-shadow(0 0 10px red); 
+        }
         .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         .btn { background: #222; color: white; border: 2px solid #fff; padding: 10px; font-family: inherit; cursor: pointer; text-align: left; }
         .btn.correct { background: #050; border-color: #0f0; } .btn.wrong { background: #500; border-color: #f00; }
@@ -198,7 +202,15 @@
             display: flex; flex-direction: column; padding: 10px;
         }
         .dg-enemy-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .dg-enemy-img { width: 100px; height: 100px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 15px rgba(255,50,50,0.5)); }
+        .dg-enemy-img { 
+            width: min(150px, 30vw); height: min(150px, 30vw); 
+            object-fit: contain; image-rendering: pixelated; 
+            filter: drop-shadow(0 0 15px rgba(255,50,50,0.5)); 
+        }
+        @media (min-width: 768px) {
+            .dg-enemy-img { width: 180px; height: 180px; }
+            .enemy-img-large { width: 150px; height: 150px; }
+        }
         .dg-hp-container { width: 180px; background: #000; border: 2px solid #666; border-radius: 4px; padding: 2px; margin-top: 10px; }
         .dg-hp-bar { height: 8px; transition: width 0.3s; }
         .dg-hp-red { background: linear-gradient(to right, #f00, #900); }
@@ -334,6 +346,9 @@
     <!-- バトル画面 -->
     <div class="dg-battle" id="dg-battle">
         <div class="dg-battle-scene" id="dg-scene">
+            <div style="position:absolute; top:10px; left:10px;">
+                <button class="dg-btn" style="padding:4px 10px; font-size:0.75rem; width:auto;" onclick="DG.confirmExit()">← 戻る</button>
+            </div>
             <div style="position:absolute; top:10px; right:10px; font-size:0.75rem; background:#fff; color:#000; padding:2px 8px; border-radius:4px;" id="dg-badge">NORMAL</div>
             <div class="dg-enemy-area">
                 <img id="dg-enemy-img" class="dg-enemy-img" src="" alt="" style="display:none;">
@@ -357,7 +372,10 @@
     <div class="dg-result" id="dg-result">
         <h1 id="dg-result-title" style="font-size:2.5rem; margin-bottom:20px;">RESULT</h1>
         <p id="dg-result-msg" style="margin-bottom:30px;">...</p>
-        <button class="dg-btn" style="width:200px;" onclick="DG.showMenu()">村へ帰還</button>
+        <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+            <button class="dg-btn" style="width:200px;" onclick="DG.showMenu()">村へ帰還</button>
+            <button class="dg-btn" style="width:200px; border-color:#666; color:#aaa;" onclick="backToTitle()">タイトルへ</button>
+        </div>
     </div>
 </div>
 
@@ -387,30 +405,55 @@ const IMAGES = {
     hero_left: "hero_left.png",
     hero_right: "hero_right.png",
     
-    // 村人（各ステージ用）- 同じ画像を使うか、個別に設定可能
+    // RPG村人（各ステージ用）- 個別画像を設定
     villager: "sage.png",
-    villager1: "sage.png",   // ステージ1: 線形代数
-    villager2: "sage.png",   // ステージ2: 確率統計
-    villager3: "sage.png",   // ステージ3: 情報理論
-    villager4: "sage.png",   // ステージ4: 機械学習基礎
-    villager5: "sage.png",   // ステージ5: 前処理・特徴量
-    villager6: "sage.png",   // ステージ6: 勾配降下法
-    villager7: "sage.png",   // ステージ7: ニューラルネット
-    villager8: "sage.png",   // ステージ8: 活性化関数
-    villager9: "sage.png",   // ステージ9: 損失関数
-    villager10: "sage.png",  // ステージ10: 正則化
-    villager11: "sage.png",  // ステージ11: 最適化手法
-    villager12: "sage.png",  // ステージ12: CNN基礎
-    villager13: "sage.png",  // ステージ13: CNN応用
-    villager14: "sage.png",  // ステージ14: RNN・LSTM
-    villager15: "sage.png",  // ステージ15: Transformer
-    villager16: "sage.png",  // ステージ16: 生成モデル
-    villager17: "sage.png",  // ステージ17: 強化学習
-    villager18: "sage.png",  // ステージ18: 軽量化・運用
+    villager1: "villager1.png",   // ステージ1: 線形代数
+    villager2: "villager2.png",   // ステージ2: 確率統計
+    villager3: "villager3.png",   // ステージ3: 情報理論
+    villager4: "villager4.png",   // ステージ4: 機械学習基礎
+    villager5: "villager5.png",   // ステージ5: 前処理・特徴量
+    villager6: "villager6.png",   // ステージ6: 勾配降下法
+    villager7: "villager7.png",   // ステージ7: ニューラルネット
+    villager8: "villager8.png",   // ステージ8: 活性化関数
+    villager9: "villager9.png",   // ステージ9: 損失関数
+    villager10: "villager10.png", // ステージ10: 正則化
+    villager11: "villager11.png", // ステージ11: 最適化手法
+    villager12: "villager12.png", // ステージ12: CNN基礎
+    villager13: "villager13.png", // ステージ13: CNN応用
+    villager14: "villager14.png", // ステージ14: RNN・LSTM
+    villager15: "villager15.png", // ステージ15: Transformer
+    villager16: "villager16.png", // ステージ16: 生成モデル
+    villager17: "villager17.png", // ステージ17: 強化学習
+    villager18: "villager18.png", // ステージ18: 軽量化・運用
     
-    // モンスター
+    // ダンジョンモード賢者
+    sage: "sage.png",
+    
+    // ダンジョンモード モンスター（ステージ別）
+    monster1: "monster1.png",
+    monster2: "monster2.png",
+    monster3: "monster3.png",
+    monster4: "monster4.png",
+    monster5: "monster5.png",
+    monster6: "monster6.png",
+    monster7: "monster7.png",
+    monster8: "monster8.png",
+    monster9: "monster9.png",
+    monster10: "monster10.png",
+    monster11: "monster11.png",
+    monster12: "monster12.png",
+    monster13: "monster13.png",
+    monster14: "monster14.png",
+    monster15: "monster15.png",
+    monster16: "monster16.png",
+    monster17: "monster17.png",
+    monster18: "monster18.png",
+    
+    // RPGモード モンスター
     slime: "slime.png",
     boss: "boss.png",
+    
+    // ダンジョン特殊モード
     ghost: "ghost.png",      // 復習モード用
     skull: "skull.png",      // サドンデス用
     
@@ -6715,7 +6758,9 @@ const DG = {
         const diff = DIFFICULTIES[level];
         this.state.p_max = 100; this.state.p_hp = 100;
         this.state.e_max = diff.hp; this.state.e_hp = diff.hp;
-        this.setupBattleUI(stg.name, "👾", `NORMAL ${diff.label}`, "#fff", "slime");
+        // ステージ別モンスター画像
+        const monsterKey = "monster" + sid;
+        this.setupBattleUI(stg.name + "の番人", "👾", `${diff.label}`, "#fff", monsterKey);
         this.nextTurn();
     },
     
@@ -6908,6 +6953,14 @@ const DG = {
     
     setMsg(html) {
         this.dom.msg.innerHTML = html;
+    },
+    
+    confirmExit() {
+        if (confirm("バトルを中断してメニューに戻りますか？")) {
+            Sound.stopBGM();
+            this.dom.battle.style.display = 'none';
+            this.showMenu();
+        }
     }
 };
 
