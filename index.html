@@ -93,7 +93,7 @@
         .hp-green { background: #0f0; } .hp-red { background: #f00; }
         .enemy-display { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .enemy-img-large { 
-            width: min(120px, 25vw); height: min(120px, 25vw); 
+            width: min(180px, 40vw); height: min(180px, 40vw); 
             object-fit: contain; image-rendering: pixelated; 
             filter: drop-shadow(0 0 10px red); 
         }
@@ -203,13 +203,13 @@
         }
         .dg-enemy-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .dg-enemy-img { 
-            width: min(150px, 30vw); height: min(150px, 30vw); 
+            width: min(200px, 45vw); height: min(200px, 45vw); 
             object-fit: contain; image-rendering: pixelated; 
             filter: drop-shadow(0 0 15px rgba(255,50,50,0.5)); 
         }
         @media (min-width: 768px) {
-            .dg-enemy-img { width: 180px; height: 180px; }
-            .enemy-img-large { width: 150px; height: 150px; }
+            .dg-enemy-img { width: 250px; height: 250px; }
+            .enemy-img-large { width: 200px; height: 200px; }
         }
         .dg-hp-container { width: 180px; background: #000; border: 2px solid #666; border-radius: 4px; padding: 2px; margin-top: 10px; }
         .dg-hp-bar { height: 8px; transition: width 0.3s; }
@@ -330,7 +330,8 @@
     <!-- 勉強画面 -->
     <div class="study-screen" id="dg-study">
         <div class="sage-area">
-            <div style="font-size:100px; filter:drop-shadow(0 0 15px gold);">🧙‍♂️</div>
+            <img id="dg-sage-img" src="sage.png" alt="賢者" style="max-width:80%; max-height:50%; object-fit:contain; filter:drop-shadow(0 0 20px gold);" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div style="font-size:100px; filter:drop-shadow(0 0 15px gold); display:none;">🧙‍♂️</div>
         </div>
         <div class="dialogue-container">
             <div class="dialogue-name">賢者</div>
@@ -352,7 +353,7 @@
             <div style="position:absolute; top:10px; right:10px; font-size:0.75rem; background:#fff; color:#000; padding:2px 8px; border-radius:4px;" id="dg-badge">NORMAL</div>
             <div class="dg-enemy-area">
                 <img id="dg-enemy-img" class="dg-enemy-img" src="" alt="" style="display:none;">
-                <div style="font-size:80px;" id="dg-enemy-emoji">👾</div>
+                <div style="font-size:120px;" id="dg-enemy-emoji">👾</div>
                 <div id="dg-enemy-name" style="color:#ff8888; margin-top:10px;">Enemy</div>
                 <div class="dg-hp-container"><div class="dg-hp-bar dg-hp-red" id="dg-enemy-hp" style="width:100%;"></div></div>
             </div>
@@ -6423,8 +6424,16 @@ const Battle = {
     enemy: null, q_list: [],
     start(type) {
         Input.stopMove(); Game.mode = 'battle'; document.getElementById('battle-ui').style.display = 'flex';
+        // 前回のバトル状態をリセット
+        this.q_list = [];
         if (type === 'boss') { Sound.playBGM('boss'); this.enemy = { name: "魔王", hp: 100, maxHp: 100, atk: 30, img: IMAGES.boss }; this.q_list = [...DB].sort(() => Math.random() - 0.5); }
-        else { Sound.playBGM('battle'); this.enemy = { name: "スライム", hp: 20, maxHp: 20, atk: 10, img: IMAGES.slime }; this.q_list = [DB[Math.floor(Math.random() * DB.length)]]; }
+        else { 
+            Sound.playBGM('battle'); 
+            this.enemy = { name: "スライム", hp: 20, maxHp: 20, atk: 10, img: IMAGES.slime }; 
+            // スライム用に3問ランダムで用意（HP20を倒すには最低2問正解必要）
+            const shuffled = [...DB].sort(() => Math.random() - 0.5);
+            this.q_list = shuffled.slice(0, 3);
+        }
         document.getElementById('enemy-name').innerText = this.enemy.name;
         document.getElementById('battle-enemy-img').src = this.enemy.img;
         this.updateUI(); this.log(`${this.enemy.name} があらわれた！`);
