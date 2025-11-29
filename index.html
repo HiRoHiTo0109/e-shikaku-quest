@@ -35,22 +35,23 @@
             background-color: var(--bg-color); color: var(--text-color);
             font-family: 'DotGothic16', sans-serif; font-size: var(--base-font-size);
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            height: 100vh; margin: 0; overflow: hidden; touch-action: none;
+            height: 100vh; height: 100dvh; margin: 0; overflow: hidden; touch-action: none;
         }
 
         /* ゲーム画面 */
         #game-wrapper {
-            position: relative; width: 100%; max-width: 480px; aspect-ratio: 1 / 1;
-            border: 2px solid #fff; background-color: #000; margin-bottom: 10px;
+            position: relative; width: 100%; max-width: 480px;
+            height: calc(100dvh - 200px); max-height: 480px;
+            border: 2px solid #fff; background-color: #000; flex-shrink: 0;
         }
         canvas { display: block; width: 100%; height: 100%; }
 
         /* コントローラー */
         #controller {
-            width: 100%; max-width: 480px; height: 180px;
+            width: 100%; max-width: 480px; height: 160px;
             display: grid; grid-template-columns: 1fr 1fr; padding: 10px;
             box-sizing: border-box; background: #222; border-top: 2px solid #555;
-            position: relative;
+            position: relative; flex-shrink: 0;
         }
         #bgm-toggle {
             position: absolute; top: 5px; right: 10px;
@@ -62,10 +63,10 @@
         #bgm-toggle.off { color: #f44; border-color: #f44; }
         .d-pad {
             display: grid; grid-template-areas: ". up ." "left . right" ". down .";
-            gap: 5px; width: 150px; height: 150px; justify-self: center; align-self: center;
+            gap: 4px; width: 130px; height: 130px; justify-self: center; align-self: center;
         }
         .d-btn {
-            width: 50px; height: 50px; background: rgba(255, 255, 255, 0.15);
+            width: 42px; height: 42px; background: rgba(255, 255, 255, 0.15);
             border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 8px;
             display: flex; justify-content: center; align-items: center;
             font-size: 1.5rem; user-select: none; cursor: pointer;
@@ -73,7 +74,7 @@
         .d-btn:active { background: rgba(255, 255, 255, 0.5); }
         .action-pad { display: flex; justify-content: center; align-items: center; }
         .a-btn {
-            width: 80px; height: 80px; background: rgba(255, 100, 100, 0.3);
+            width: 70px; height: 70px; background: rgba(255, 100, 100, 0.3);
             border: 4px solid rgba(255, 100, 100, 0.8); border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
             font-size: 1.5rem; font-weight: bold; user-select: none; cursor: pointer;
@@ -91,7 +92,7 @@
         .hp-bar-fill { height: 100%; width: 100%; transition: width 0.2s; }
         .hp-green { background: #0f0; } .hp-red { background: #f00; }
         .enemy-display { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .enemy-img-large { width: 120px; height: 120px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 10px red); }
+        .enemy-img-large { width: 100px; height: 100px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 10px red); }
         .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
         .btn { background: #222; color: white; border: 2px solid #fff; padding: 10px; font-family: inherit; cursor: pointer; text-align: left; }
         .btn.correct { background: #050; border-color: #0f0; } .btn.wrong { background: #500; border-color: #f00; }
@@ -197,7 +198,7 @@
             display: flex; flex-direction: column; padding: 10px;
         }
         .dg-enemy-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .dg-enemy-img { max-height: 30vh; object-fit: contain; filter: drop-shadow(0 0 15px rgba(255,50,50,0.5)); }
+        .dg-enemy-img { width: 100px; height: 100px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 15px rgba(255,50,50,0.5)); }
         .dg-hp-container { width: 180px; background: #000; border: 2px solid #666; border-radius: 4px; padding: 2px; margin-top: 10px; }
         .dg-hp-bar { height: 8px; transition: width 0.3s; }
         .dg-hp-red { background: linear-gradient(to right, #f00, #900); }
@@ -276,7 +277,7 @@
     </div>
 </div>
 <!-- ダンジョンモード -->
-<div id="dungeon-wrapper">
+<div id="dungeon-wrapper" style="display:none;">
     <div class="dungeon-header">
         <span id="dg-header-title">アカデミアの村</span>
         <button class="dg-btn" style="padding:4px 12px; font-size:0.85rem; width:auto;" onclick="backToTitle()">タイトルへ</button>
@@ -335,6 +336,7 @@
         <div class="dg-battle-scene" id="dg-scene">
             <div style="position:absolute; top:10px; right:10px; font-size:0.75rem; background:#fff; color:#000; padding:2px 8px; border-radius:4px;" id="dg-badge">NORMAL</div>
             <div class="dg-enemy-area">
+                <img id="dg-enemy-img" class="dg-enemy-img" src="" alt="" style="display:none;">
                 <div style="font-size:80px;" id="dg-enemy-emoji">👾</div>
                 <div id="dg-enemy-name" style="color:#ff8888; margin-top:10px;">Enemy</div>
                 <div class="dg-hp-container"><div class="dg-hp-bar dg-hp-red" id="dg-enemy-hp" style="width:100%;"></div></div>
@@ -385,10 +387,34 @@ const IMAGES = {
     hero_left: "hero_left.png",
     hero_right: "hero_right.png",
     
-    // その他
+    // 村人（各ステージ用）- 同じ画像を使うか、個別に設定可能
     villager: "sage.png",
+    villager1: "sage.png",   // ステージ1: 線形代数
+    villager2: "sage.png",   // ステージ2: 確率統計
+    villager3: "sage.png",   // ステージ3: 情報理論
+    villager4: "sage.png",   // ステージ4: 機械学習基礎
+    villager5: "sage.png",   // ステージ5: 前処理・特徴量
+    villager6: "sage.png",   // ステージ6: 勾配降下法
+    villager7: "sage.png",   // ステージ7: ニューラルネット
+    villager8: "sage.png",   // ステージ8: 活性化関数
+    villager9: "sage.png",   // ステージ9: 損失関数
+    villager10: "sage.png",  // ステージ10: 正則化
+    villager11: "sage.png",  // ステージ11: 最適化手法
+    villager12: "sage.png",  // ステージ12: CNN基礎
+    villager13: "sage.png",  // ステージ13: CNN応用
+    villager14: "sage.png",  // ステージ14: RNN・LSTM
+    villager15: "sage.png",  // ステージ15: Transformer
+    villager16: "sage.png",  // ステージ16: 生成モデル
+    villager17: "sage.png",  // ステージ17: 強化学習
+    villager18: "sage.png",  // ステージ18: 軽量化・運用
+    
+    // モンスター
     slime: "slime.png",
     boss: "boss.png",
+    ghost: "ghost.png",      // 復習モード用
+    skull: "skull.png",      // サドンデス用
+    
+    // タイル
     floor: "floor.png",
     wall: "wall.png"
 };
@@ -6416,20 +6442,26 @@ function draw() {
             if (tile === 5) { ctx.fillStyle='#afa'; ctx.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE); }
             // 村人（6〜23）を描画
             if (tile >= 6 && tile <= 23) {
+                const sid = tile - 5; // ステージID (1-18)
                 drawTile('floor', x, y, '#222');
-                // 村人の色をステージごとに変える
-                const colors = ['#f66','#6f6','#66f','#ff6','#f6f','#6ff','#fa0','#0af','#a0f'];
-                const colorIdx = (tile - 6) % colors.length;
-                ctx.fillStyle = colors[colorIdx];
-                ctx.beginPath();
-                ctx.arc(x*TILE_SIZE + TILE_SIZE/2, y*TILE_SIZE + TILE_SIZE/2, TILE_SIZE/3, 0, Math.PI*2);
-                ctx.fill();
-                // ステージ番号を表示
-                ctx.font = "bold 14px sans-serif";
-                ctx.fillStyle = "#000";
-                ctx.textAlign = "center";
-                ctx.fillText(tile - 5, x*TILE_SIZE + TILE_SIZE/2, y*TILE_SIZE + TILE_SIZE/2 + 5);
-                ctx.textAlign = "left";
+                // 村人画像を試行、なければフォールバック描画
+                const villagerKey = 'villager' + sid;
+                const villagerImg = assets[villagerKey] || assets['villager'];
+                if (villagerImg && villagerImg.complete && villagerImg.naturalHeight !== 0) {
+                    ctx.drawImage(villagerImg, x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                } else {
+                    // フォールバック: 色付き円とステージ番号
+                    const colors = ['#f66','#6f6','#66f','#ff6','#f6f','#6ff','#fa0','#0af','#a0f'];
+                    ctx.fillStyle = colors[(sid - 1) % colors.length];
+                    ctx.beginPath();
+                    ctx.arc(x*TILE_SIZE + TILE_SIZE/2, y*TILE_SIZE + TILE_SIZE/2, TILE_SIZE/3, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.font = "bold 14px sans-serif";
+                    ctx.fillStyle = "#000";
+                    ctx.textAlign = "center";
+                    ctx.fillText(sid, x*TILE_SIZE + TILE_SIZE/2, y*TILE_SIZE + TILE_SIZE/2 + 5);
+                    ctx.textAlign = "left";
+                }
             }
         }
     }
@@ -6547,6 +6579,7 @@ const DG = {
             enemyHp: document.getElementById('dg-enemy-hp'),
             playerHpText: document.getElementById('dg-player-hp-text'),
             enemyName: document.getElementById('dg-enemy-name'),
+            enemyImg: document.getElementById('dg-enemy-img'),
             enemyEmoji: document.getElementById('dg-enemy-emoji'),
             badge: document.getElementById('dg-badge'),
             reviewCount: document.getElementById('dg-review-count'),
@@ -6682,7 +6715,7 @@ const DG = {
         const diff = DIFFICULTIES[level];
         this.state.p_max = 100; this.state.p_hp = 100;
         this.state.e_max = diff.hp; this.state.e_hp = diff.hp;
-        this.setupBattleUI(stg.name, "👾", `NORMAL ${diff.label}`, "#fff");
+        this.setupBattleUI(stg.name, "👾", `NORMAL ${diff.label}`, "#fff", "slime");
         this.nextTurn();
     },
     
@@ -6696,7 +6729,7 @@ const DG = {
         const hp = this.state.q_list.length * 10;
         this.state.e_max = hp; this.state.e_hp = hp;
         this.state.p_max = 100; this.state.p_hp = 100;
-        this.setupBattleUI("復習の亡霊", "👻", "REVIEW", "#4db8ff");
+        this.setupBattleUI("復習の亡霊", "👻", "REVIEW", "#4db8ff", "ghost");
         this.nextTurn();
     },
     
@@ -6706,16 +6739,29 @@ const DG = {
         this.state.q_list = [...DB].sort(() => Math.random() - 0.5);
         this.state.e_max = 9999; this.state.e_hp = 9999;
         this.state.p_max = 1; this.state.p_hp = 1;
-        this.setupBattleUI("サドンデス神", "💀", "SUDDEN DEATH", "#ff4444");
+        this.setupBattleUI("サドンデス神", "💀", "SUDDEN DEATH", "#ff4444", "skull");
         this.nextTurn();
     },
     
-    setupBattleUI(name, emoji, badge, color) {
+    setupBattleUI(name, emoji, badge, color, imgKey) {
         this.dom.menu.style.display = 'none';
         this.dom.battle.style.display = 'flex';
         this.dom.headerTitle.innerText = '試練の塔';
         this.dom.enemyName.innerText = name;
-        this.dom.enemyEmoji.innerText = emoji;
+        
+        // 画像があれば表示、なければ絵文字
+        const imgEl = document.getElementById('dg-enemy-img');
+        const emojiEl = this.dom.enemyEmoji;
+        if (imgKey && IMAGES[imgKey]) {
+            imgEl.src = IMAGES[imgKey];
+            imgEl.style.display = 'block';
+            emojiEl.style.display = 'none';
+            imgEl.onerror = () => { imgEl.style.display = 'none'; emojiEl.style.display = 'block'; };
+        } else {
+            imgEl.style.display = 'none';
+            emojiEl.style.display = 'block';
+            emojiEl.innerText = emoji;
+        }
         this.dom.badge.innerText = badge;
         this.dom.badge.style.background = color;
         this.dom.badge.style.color = (color === '#fff') ? '#000' : '#fff';
@@ -6784,6 +6830,7 @@ const DG = {
     
     damageEnemy() {
         this.dom.enemyEmoji.classList.add('dg-anim-damage');
+        if (this.dom.enemyImg) this.dom.enemyImg.classList.add('dg-anim-damage');
         if (this.state.mode !== 'sudden') {
             this.state.e_hp = Math.max(0, this.state.e_hp - 10);
             if (this.state.p_hp < this.state.p_max) {
@@ -6793,6 +6840,7 @@ const DG = {
         this.updateBars();
         setTimeout(() => {
             this.dom.enemyEmoji.classList.remove('dg-anim-damage');
+            if (this.dom.enemyImg) this.dom.enemyImg.classList.remove('dg-anim-damage');
             this.dom.nextBtn.style.display = 'block';
         }, 500);
     },
@@ -6893,7 +6941,9 @@ function backToModeSelect() {
 
 function backToTitle() {
     Sound.stopBGM();
+    // 両モードのUIを非表示に
     document.getElementById('rpg-status').style.display = 'none';
+    document.getElementById('dungeon-wrapper').style.display = 'none';
     document.getElementById('start-screen').style.display = 'flex';
     // プレイヤーを初期位置に戻す
     Player.x = 15;
