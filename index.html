@@ -93,7 +93,8 @@
         .hp-green { background: #0f0; } .hp-red { background: #f00; }
         .enemy-display { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .enemy-img-large { 
-            width: min(180px, 40vw); height: min(180px, 40vw); 
+            width: clamp(100px, 30vmin, 200px); 
+            height: clamp(100px, 30vmin, 200px); 
             object-fit: contain; image-rendering: pixelated; 
             filter: drop-shadow(0 0 10px red); 
         }
@@ -203,13 +204,21 @@
         }
         .dg-enemy-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .dg-enemy-img { 
-            width: min(200px, 45vw); height: min(200px, 45vw); 
+            width: clamp(120px, 35vmin, 280px); 
+            height: clamp(120px, 35vmin, 280px); 
             object-fit: contain; image-rendering: pixelated; 
             filter: drop-shadow(0 0 15px rgba(255,50,50,0.5)); 
         }
+        .dg-enemy-emoji {
+            font-size: clamp(80px, 25vmin, 150px) !important;
+        }
         @media (min-width: 768px) {
-            .dg-enemy-img { width: 250px; height: 250px; }
-            .enemy-img-large { width: 200px; height: 200px; }
+            .dg-enemy-img { width: 280px; height: 280px; }
+            .enemy-img-large { width: 220px; height: 220px; }
+        }
+        @media (max-height: 600px) {
+            .dg-enemy-img { width: clamp(80px, 25vmin, 150px); height: clamp(80px, 25vmin, 150px); }
+            .enemy-img-large { width: clamp(80px, 20vmin, 120px); height: clamp(80px, 20vmin, 120px); }
         }
         .dg-hp-container { width: 180px; background: #000; border: 2px solid #666; border-radius: 4px; padding: 2px; margin-top: 10px; }
         .dg-hp-bar { height: 8px; transition: width 0.3s; }
@@ -353,7 +362,7 @@
             <div style="position:absolute; top:10px; right:10px; font-size:0.75rem; background:#fff; color:#000; padding:2px 8px; border-radius:4px;" id="dg-badge">NORMAL</div>
             <div class="dg-enemy-area">
                 <img id="dg-enemy-img" class="dg-enemy-img" src="" alt="" style="display:none;">
-                <div style="font-size:120px;" id="dg-enemy-emoji">👾</div>
+                <div class="dg-enemy-emoji" id="dg-enemy-emoji">👾</div>
                 <div id="dg-enemy-name" style="color:#ff8888; margin-top:10px;">Enemy</div>
                 <div class="dg-hp-container"><div class="dg-hp-bar dg-hp-red" id="dg-enemy-hp" style="width:100%;"></div></div>
             </div>
@@ -6354,8 +6363,9 @@ const Player = {
         if(dx>0) this.dir='right'; if(dx<0) this.dir='left'; if(dy>0) this.dir='down'; if(dy<0) this.dir='up';
         
         const tile = getTile(nextX, nextY);
-        // 壁(1)、宿屋主人(2)、宿屋(3)、ボス(4)、村人(6-23)は通れない
-        if (tile === 1 || tile === 2 || tile === 3 || tile === 4 || (tile >= 6 && tile <= 23)) return;
+        // 壁(1)、宿屋主人(2)、宿屋(3)、村人(6-23)は通れない
+        // ボス(4)は踏むと戦闘開始
+        if (tile === 1 || tile === 2 || tile === 3 || (tile >= 6 && tile <= 23)) return;
         this.x = nextX; this.y = nextY;
         this.checkStepEvent(tile, nextX, nextY);
     },
@@ -6440,7 +6450,12 @@ const Battle = {
         setTimeout(() => this.nextQuestion(), 1500);
     },
     nextQuestion() {
-        if (this.q_list.length === 0) { if (this.enemy.hp > 0) { this.end("勝負はお預けだ。"); Sound.resumeMapBGM(); } return; }
+        // 問題がなくなったら補充（どちらかが倒れるまで戦う）
+        if (this.q_list.length === 0) {
+            if (this.enemy.hp <= 0 || Player.hp <= 0) return; // 決着がついていれば終了
+            // 問題を補充
+            this.q_list = [...DB].sort(() => Math.random() - 0.5);
+        }
         const q = this.q_list.pop();
         document.getElementById('quiz-area').style.display = 'block'; document.getElementById('battle-next-btn').style.display = 'none';
         document.getElementById('quiz-text').innerText = q.q;
